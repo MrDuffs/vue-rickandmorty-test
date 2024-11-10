@@ -12,15 +12,14 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       assets: fileURLToPath(new URL('./src/assets', import.meta.url)),
       components: fileURLToPath(new URL('./src/components', import.meta.url)),
+      stores: fileURLToPath(new URL('./src/stores', import.meta.url)),
     },
   },
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `
-          @use '@/assets/styles/main.scss' as *;`,
-        charset: false,
-      }
-    }
+        additionalData: `@use 'assets/styles/main.scss' as *;`,
+      },
+    },
   },
 });
