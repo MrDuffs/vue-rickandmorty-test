@@ -1,0 +1,48 @@
+@use 'assets/styles/variables' as *;
+
+.card {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  padding: 10px;
+  width: 100%;
+  height: 100%;
+
+  background-color: $green-dark;
+  border-radius: 1rem;
+  overflow: hidden;
+
+  &__img {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 1rem;
+    overflow: hidden;
+
+    img {
+      position: absolute; // Абсолютное позиционирование
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-position: center;
+      object-fit: cover;
+      border-radius: inherit; // Наследуем border-radius от родителя
+      transition: transform 0.3s ease; // Добавляем плавность для hover эффектов
+
+      &:hover {
+        transform: scale(1.05); // Опционально: эффект при наведении
+      }
+    }
+  }
+  &__title {
+  }
+  &__name {
+  }
+  &__gender {
+  }
+  &__location {
+  }
+}
