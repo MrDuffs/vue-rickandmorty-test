@@ -1,1 +1,10 @@
 @use './assets/styles/variables' as *;
+
+#app {
+  min-height: 100%;
+}
+
+.main-layout {
+  min-height: 100%;
+  height: 100%;
+}
