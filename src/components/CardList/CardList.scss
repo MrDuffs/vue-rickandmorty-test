@@ -1,0 +1,12 @@
+.card-list {
+  height: 100%;
+  // height: 100dvh;
+  // min-height: 100px;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  overflow-y: auto;
+}
