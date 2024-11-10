@@ -1,22 +1,25 @@
 <template>
-  <main>
+  <main class="main-layout">
     <h1>Hello world!</h1>
-    <CardList />
+    <CardList :charactersData="charactersData" />
   </main>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
+import { storeToRefs } from 'pinia'
 import { useCharacterStore } from 'stores/character';
 import CardList from 'components/CardList';
 
-const characterStore = useCharacterStore();
+const charsStore = useCharacterStore();
+
+const { charactersData } = storeToRefs(charsStore);
 
 onMounted(async () => {
-  await characterStore.getCharsData();
+  await charsStore.getCharsData();  
 });
 </script>
 
 <style lang="scss">
-@import './index.scss';
+@use './index.scss';
 </style>
