@@ -1,58 +1,71 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { characterApi } from '@/api/character';
-// import type {
-//   Character,
-//   CharacterStatus,
-//   QueryParams,
-//   ApiResponse,
-// } from '@/types/character.types';
+import type { Character, Info, CharacterStatus } from '@/types/character.types';
 import type {
   CharacterStoreState,
   GetCharsDataAction,
 } from '@/types/store.types';
 
 export const useCharacterStore = defineStore('character', () => {
-  const state = ref<CharacterStoreState>({
-    charactersData: [],
-    isCharsLoading: false,
-    charsError: null,
-    paginationInfo: null,
-  });
+  const charactersData = ref<Character[]>([]);
+  const isCharsLoading = ref(false);
+  const charsError = ref<string | null>(null);
+  const paginationInfo = ref<Info | null>(null);
+  const currentPage = ref(1);
 
-  const getCharsData: GetCharsDataAction = async (params) => {
+  const getCharsData: GetCharsDataAction = async params => {
     try {
-      state.value.isCharsLoading = true;
-      const response = await characterApi.getCharacters(params);
-      console.log('getCharsData: ', response.data);
+      isCharsLoading.value = true;
+      const response = await characterApi.getCharacters({
+        ...params,
+        page: currentPage.value,
+      });
+      // console.log('getCharsData: ', response.data);
 
       const { info, results } = response.data;
-      state.value.charactersData = results;
-      state.value.paginationInfo = info;
+      charactersData.value = [...charactersData.value, ...results];
+      paginationInfo.value = info;
 
-      console.log('charactersData: ', state.value.charactersData);
-      console.log('paginationInfo: ', state.value.paginationInfo);
-      
-
+      console.log('charactersData: ', charactersData.value);
+      console.log('paginationInfo: ', paginationInfo.value);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        state.value.charsError = error.message;
+        charsError.value = error.message;
       } else {
-        state.value.charsError = 'An unknown error occurred';
+        charsError.value = 'An unknown error occurred';
       }
     } finally {
-      state.value.isCharsLoading = false;
+      isCharsLoading.value = false;
     }
   };
 
+  const loadMoreCharacters = async () => {
+    if (!hasMorePages.value || isCharsLoading.value) return;
+
+    currentPage.value += 1;
+    await getCharsData();
+  };
+
+  const hasMorePages = computed(() => {
+    return paginationInfo.value
+      ? currentPage.value < paginationInfo.value.pages
+      : false;
+  });
+
   return {
     // State
-    charactersData: state.value.charactersData,
-    isCharsLoading: state.value.isCharsLoading,
-    charsError: state.value.charsError,
-    paginationInfo: state.value.paginationInfo,
+    charactersData,
+    isCharsLoading,
+    charsError,
+    paginationInfo,
+    currentPage,
 
     // Actions
     getCharsData,
+    loadMoreCharacters,
+
+    // Computed
+    hasMorePages,
   };
 });
