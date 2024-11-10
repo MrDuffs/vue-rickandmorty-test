@@ -1,0 +1,41 @@
+{
+  "files": [],
+  "compilerOptions": {
+    "lib": ["esnext", "dom"],
+    "module": "esnext",
+    "target": "esnext",
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "allowJs": true,
+    "checkJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "app/*": ["*"],
+      "@/*": ["src/*"],
+      "components/*": ["src/components/*"],
+      "base/*": ["src/components/base/*"],
+      "assets/*": ["src/assets/*"],
+      "stores/*": ["src/stores/*"]
+    },
+    "noImplicitAny": false
+  },
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ]
+}
