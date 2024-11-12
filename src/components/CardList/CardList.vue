@@ -1,15 +1,20 @@
 <template>
-  <div class="card-list" ref="listRef">
-    <template v-for="character in charactersData" :key="character.id">
-      <Card :character="character" />
-    </template>
+  <div class="card-list" ref="listRef" @scroll="handleScroll">
+    <TransitionGroup name="card-list" tag="div" class="card-list__container">
+      <Card
+        v-for="character in charactersData"
+        :key="character.id"
+        :character="character"
+      />
+    </TransitionGroup>
     <LoadingSpinner v-if="isCharsLoading" />
+    {{ (!hasMorePages && !isCharsLoading) ? 'Персонажей больше нет' : '' }}
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
-import { useInfiniteScroll } from '@vueuse/core';
+import { ref } from 'vue';
+// import { useInfiniteScroll } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { Card, LoadingSpinner } from 'components/_common';
 import { useCharacterStore } from '@/stores/character';
@@ -24,25 +29,34 @@ const props = withDefaults(defineProps<CardListProps>(), {
 });
 
 const charsStore = useCharacterStore();
-const { isCharsLoading } = storeToRefs(charsStore);
+const { isCharsLoading, hasMorePages } = storeToRefs(charsStore);
 
 const listRef = ref<HTMLElement | null>(null);
-// let observer: IntersectionObserver | null = null;
 
-useInfiniteScroll(listRef, charsStore.loadMoreCharacters, {
-  distance: 100, // Расстояние до конца списка, при котором срабатывает загрузка
-  direction: 'bottom',
-});
-
+// Бесконечный скролл, используя vue use
 // useInfiniteScroll(
 //   listRef,
 //   async () => {
-//     await charsStore.loadMoreCharacters();
+//     if (!isCharsLoading.value) {
+//       await charsStore.loadMoreCharacters();
+//     }
 //   },
 //   {
-//     distance: 100, // Задаем расстояние до конца списка, когда подгружать новые данные
+//     distance: 100,
+//     throttle: 500, // добавляем задержку между вызовами
 //   }
 // );
+
+const handleScroll = async (event: Event) => {
+  const element = event.target as HTMLElement;
+
+  const scrollPosition = element.scrollTop + element.clientHeight;
+  const scrollHeight = element.scrollHeight;
+
+  if (scrollHeight - scrollPosition <= 100 && !isCharsLoading.value) {
+    await charsStore.loadMoreCharacters();
+  }
+};
 </script>
 
 <style scoped lang="scss">

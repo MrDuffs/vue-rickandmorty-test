@@ -1,7 +1,6 @@
+@use 'assets/styles/variables' as *;
+
 .card-list {
-  height: 100%;
-  // height: 100dvh;
-  // min-height: 100px;
   padding: 20px;
 
   display: flex;
@@ -9,4 +8,26 @@
   align-items: center;
   gap: 15px;
   overflow-y: auto;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+}
+
+.card-list-enter-active,
+.card-list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.card-list-enter-from {
+  opacity: 0;
+  transform: translateX(-40px);
+}
+
+.card-list-leave-to {
+  opacity: 0;
+  transform: translateX(40px);
 }
