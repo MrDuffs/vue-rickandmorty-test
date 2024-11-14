@@ -5,7 +5,8 @@ import vue from '@vitejs/plugin-vue';
 import vueDevTools from 'vite-plugin-vue-devtools';
 
 // https://vite.dev/config/
-export default defineConfig({
+/** @type {import('vite').UserConfig} */
+export default defineConfig(async () => ({
   plugins: [vue(), vueDevTools()],
   resolve: {
     alias: {
@@ -18,8 +19,11 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use 'assets/styles/main.scss' as *;`,
+        additionalData: `
+            @use '@/assets/styles/variables' as *;
+          `,
+        charset: false,
       },
     },
   },
-});
+}));
