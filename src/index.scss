@@ -1,4 +1,4 @@
-@use './assets/styles/variables' as *;
+@forward './assets/styles/main.scss';
 
 #app {
   max-height: 100vh;
