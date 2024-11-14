@@ -1,14 +1,17 @@
 <template>
   <div class="card-list" ref="listRef" @scroll="handleScroll">
+    <!-- <LoadingSpinner v-if="isCharsLoading" /> -->
     <TransitionGroup name="card-list" tag="div" class="card-list__container">
-      <Card
-        v-for="character in charactersData"
-        :key="character.id"
-        :character="character"
-      />
+      <template v-if="isAnyCharacters && !isCharsLoading">
+        <Card
+          v-for="character in charactersData"
+          :key="character.id"
+          :character="character"
+        />
+      </template>
     </TransitionGroup>
-    <LoadingSpinner v-if="isCharsLoading" />
-    {{ (!hasMorePages && !isCharsLoading) ? 'Персонажей больше нет' : '' }}
+
+    {{ !hasMorePages && !isCharsLoading ? 'Персонажей больше нет' : '' }}
   </div>
 </template>
 
@@ -29,7 +32,8 @@ const props = withDefaults(defineProps<CardListProps>(), {
 });
 
 const charsStore = useCharacterStore();
-const { isCharsLoading, hasMorePages } = storeToRefs(charsStore);
+const { isCharsLoading, hasMorePages, isAnyCharacters } =
+  storeToRefs(charsStore);
 
 const listRef = ref<HTMLElement | null>(null);
 

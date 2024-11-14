@@ -1,6 +1,7 @@
 @use 'assets/styles/variables' as *;
 
 .card-list {
+  max-height: calc(100dvh - 60px);
   padding: 20px;
 
   display: flex;
