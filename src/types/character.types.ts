@@ -18,13 +18,6 @@ export interface Location {
   url: string;
 }
 
-export interface Info {
-  count: number;
-  pages: number;
-  next: string | null;
-  prev: string | null;
-}
-
 export enum CharacterStatus {
   ALIVE = 'Alive',
   DEAD = 'Dead',
@@ -36,17 +29,4 @@ export enum CharacterGender {
   MALE = 'Male',
   GENDERLESS = 'Genderless',
   UNKNOWN = 'unknown',
-}
-
-export interface ApiResponse {
-  info: Info;
-  results: Character[];
-}
-
-export interface QueryParams {
-  page?: number;
-  name?: string;
-  status?: CharacterStatus;
-  gender?: CharacterGender;
-  species?: string;
 }

@@ -1,4 +1,5 @@
-import type { Character, Info, QueryParams } from "./character.types";
+import type { Info, QueryParams } from "./api.types";
+import type { Character } from "./character.types";
 
 export interface CharacterStoreState {
   charactersData: Character[];
