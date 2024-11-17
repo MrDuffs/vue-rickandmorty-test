@@ -19,10 +19,16 @@ export interface ApiResponse<T> {
   results: T[];
 }
 
-export interface ApiClient {
+export interface CharacterApiClient {
   getCharacters: (
     params?: QueryParams
   ) => Promise<AxiosResponse<ApiResponse<Character>>>;
+  getCharsFromLocation: (
+    charsArr: string[]
+  ) => Promise<AxiosResponse<Character[] | Character>>;
+}
+
+export interface LocationApiClient {
   getLocations: (
     params?: QueryParams
   ) => Promise<AxiosResponse<ApiResponse<Location>>>;

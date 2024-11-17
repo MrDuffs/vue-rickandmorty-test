@@ -1,8 +1,14 @@
 import { api } from './index';
-import type { ApiClient, ApiResponse, QueryParams } from '@/types/api.types';
+import type {
+  CharacterApiClient,
+  ApiResponse,
+  QueryParams,
+} from '@/types/api.types';
 import type { Character } from '@/types/character.types';
 
-export const characterApi: Pick<ApiClient, 'getCharacters'> = {
+export const characterApi: CharacterApiClient = {
   getCharacters: (params?: QueryParams) =>
     api.get<ApiResponse<Character>>('/character', { params }),
+  getCharsFromLocation: (charsArr: string[]) =>
+    api.get<Character[] | Character>(`/character/${charsArr}`),
 };
