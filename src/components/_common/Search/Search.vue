@@ -51,7 +51,7 @@ const inputRef = ref<HTMLInputElement | null>(null);
 const updateValue = useDebounceFn((event: Event) => {
   const target = event.target as HTMLInputElement;
   emit('update:modelValue', target.value);
-}, 1000);
+}, 800);
 
 const clearInput = () => {
   emit('update:modelValue', '');
