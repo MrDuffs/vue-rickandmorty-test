@@ -1,7 +1,8 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { characterApi } from '@/api/character';
-import type { Character, Info, CharacterStatus } from '@/types/character.types';
+import type { Info } from '@/types/api.types';
+import type { Character } from '@/types/character.types';
 import type {
   CharacterStoreState,
   GetCharsDataAction,
@@ -14,27 +15,17 @@ export const useCharacterStore = defineStore('character', () => {
   const paginationInfo = ref<Info | null>(null);
   const currentPage = ref(1);
 
-  const currentSearchParams = ref<Record<string, any>>({
-    name: '',
-  });
+  const currentSearchParam = ref('');
 
   const getCharsData: GetCharsDataAction = async params => {
     isCharsLoading.value = true;
     try {
-      // const inputParamsString = JSON.stringify(params);
-      // const storedParamsString = JSON.stringify(currentSearchParams.value);
-      // console.log(params);
-      // console.log(inputParamsString.trim());
-      // console.log(storedParamsString.trim());
-      // if (inputParamsString.trim() === storedParamsString.trim()) {
-      //   return;
-      // }
-
       const response = await characterApi.getCharacters({
-        ...currentSearchParams.value,
+        name: currentSearchParam.value.length
+          ? currentSearchParam.value
+          : undefined,
         page: currentPage.value,
       });
-      // console.log('getCharsData: ', response.data);
 
       const { info, results } = response.data;
 
@@ -44,9 +35,6 @@ export const useCharacterStore = defineStore('character', () => {
         charactersData.value = [...charactersData.value, ...results];
       }
       paginationInfo.value = info;
-
-      // console.log('charactersData: ', charactersData.value);
-      // console.log('paginationInfo: ', paginationInfo.value);
     } catch (error) {
       if (error instanceof Error) {
         charsError.value = error.message;
@@ -67,31 +55,61 @@ export const useCharacterStore = defineStore('character', () => {
     if (!hasMorePages.value || isCharsLoading.value) return;
 
     currentPage.value += 1;
-    await getCharsData(currentSearchParams.value);
+    await getCharsData();
   };
 
   const getCharsByName = async (name: string) => {
-    // const inputName = name;
-    // const currentName = name;
-    if (name.trim() === currentSearchParams.value.name) {
+    if (name.trim() === currentSearchParam.value) {
       return;
     }
-    if (name !== currentSearchParams.value.name) {
+    if (name !== currentSearchParam.value) {
       charactersData.value = [];
       currentPage.value = 1;
-      currentSearchParams.value = { name };
+      currentSearchParam.value = name;
     }
 
-    await getCharsData({ name });
+    await getCharsData();
   };
 
-  const resetSearch = () => {
-    charactersData.value = [];
-    currentPage.value = 1;
+  const getCharsFromLocation = async (charsArr: string[]) => {
+    isCharsLoading.value = true;
     paginationInfo.value = null;
-    currentSearchParams.value = {};
+    currentSearchParam.value = '';
     charsError.value = null;
+    try {
+      if (!charsArr.length) {
+        charactersData.value = [];
+        return;
+      }
+
+      const response = await characterApi.getCharsFromLocation(charsArr);
+
+      const results = response.data;
+
+      charactersData.value = Array.isArray(results) ? results : [results];
+    } catch (error) {
+      if (error instanceof Error) {
+        charsError.value = error.message;
+      } else {
+        charsError.value = 'An unknown error occurred';
+      }
+      // Сбрасываем данные при ошибке
+      if (currentPage.value === 1) {
+        charactersData.value = [];
+        paginationInfo.value = null;
+      }
+    } finally {
+      isCharsLoading.value = false;
+    }
   };
+
+  // const resetSearch = () => {
+  //   charactersData.value = [];
+  //   currentPage.value = 1;
+  //   paginationInfo.value = null;
+  //   currentSearchParams.value = {};
+  //   charsError.value = null;
+  // };
 
   const hasMorePages = computed(() => {
     return paginationInfo.value
@@ -114,8 +132,9 @@ export const useCharacterStore = defineStore('character', () => {
     // Actions
     getCharsData,
     loadMoreCharacters,
-    resetSearch,
+    // resetSearch,
     getCharsByName,
+    getCharsFromLocation,
 
     // Computed
     hasMorePages,
