@@ -1,25 +1,36 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { locationApi } from '@/api/location';
+import type { Info } from '@/types/api.types';
+import type { Location } from '@/types/location.types';
 
 export const useLocationStore = defineStore('location', () => {
-  const locationData = ref([]);
+  const locationData = ref<Location[]>([]);
   const isLocationLoading = ref(false);
   const locationError = ref<string | null>(null);
-  const paginationInfo = ref<{} | null>(null);
+  const paginationInfo = ref<Info | null>(null);
+
   const currentPage = ref(1);
-  
-  const getAllLocations = async () => {
+  const currentSearchParam = ref('');
+
+  const getLocations = async () => {
     isLocationLoading.value = true;
     try {
-      const response = await locationApi.getLocations();
+      const response = await locationApi.getLocations({
+        name: currentSearchParam.value.length
+          ? currentSearchParam.value
+          : undefined,
+        page: currentPage.value,
+      });
 
       const { info, results } = response.data;
-      locationData.value = results;
+
+      if (currentPage.value === 1) {
+        locationData.value = results;
+      } else {
+        locationData.value = [...locationData.value, ...results];
+      }
       paginationInfo.value = info;
-      console.log(paginationInfo.value);
-      console.log(locationData.value);
-      
     } catch (error) {
       if (error instanceof Error) {
         locationError.value = error.message;
@@ -31,6 +42,32 @@ export const useLocationStore = defineStore('location', () => {
     }
   };
 
+  const loadMoreLocations = async () => {
+    if (!hasMorePages.value || isLocationLoading.value) return;
+
+    currentPage.value += 1;
+    await getLocations();
+  };
+
+  const getLocationByName = async (name: string) => {
+    const trimName = name.trim();
+    if (trimName === currentSearchParam.value) {
+      return;
+    }
+    if (trimName !== currentSearchParam.value) {
+      locationData.value = [];
+      currentPage.value = 1;
+      currentSearchParam.value = trimName;
+    }
+
+    await getLocations();
+  };
+
+  const hasMorePages = computed(() => {
+    return paginationInfo.value
+      ? currentPage.value < paginationInfo.value.pages
+      : false;
+  });
 
   return {
     // State
@@ -38,6 +75,8 @@ export const useLocationStore = defineStore('location', () => {
     isLocationLoading,
 
     // Actions
-    getAllLocations,
+    getLocations,
+    loadMoreLocations,
+    getLocationByName,
   };
 });
