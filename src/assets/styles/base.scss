@@ -46,3 +46,34 @@ body {
 ::selection {
   background: $green;
 }
+
+// Стили для скроллбара
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $green;
+  border-radius: 0.2rem;
+  background-clip: content-box;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &:hover {
+    background: $green-dark;
+  }
+}
+
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+}
