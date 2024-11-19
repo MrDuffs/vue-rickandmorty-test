@@ -9,10 +9,12 @@ declare module 'vue' {
   export interface GlobalComponents {
     Card: typeof import('./src/components/_common/Card/Card.vue')['default']
     CardList: typeof import('./src/components/CardList/CardList.vue')['default']
+    ClSearchMagnifyingGlass: typeof import('@kalimahapps/vue-icons/cl')['ClSearchMagnifyingGlass']
     DropdownSearch: typeof import('./src/components/_common/DropdownSearch/DropdownSearch.vue')['default']
     FlGlobeSearch: typeof import('@kalimahapps/vue-icons/fl')['FlGlobeSearch']
     LoadingSpinner: typeof import('./src/components/_common/LoadingSpinner/LoadingSpinner.vue')['default']
     MdRoundArrowBackIos: typeof import('@kalimahapps/vue-icons/md')['MdRoundArrowBackIos']
+    MdRoundClear: typeof import('@kalimahapps/vue-icons/md')['MdRoundClear']
     Search: typeof import('./src/components/_common/Search/Search.vue')['default']
   }
 }
