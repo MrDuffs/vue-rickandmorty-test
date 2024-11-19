@@ -1,26 +1,96 @@
 @use '@/assets/styles/variables' as *;
 
 .dropdown-search {
+  display: flex;
   position: relative;
-  display: inline-block;
+
+  &__divider {
+    width: 2px;
+    height: 1rem;
+    border-radius: 0.5rem;
+    background-color: $green-light;
+  }
 
   &__btn {
-    width: 150px;
-    padding: 5px;
+    height: 100%;
+    width: 100px;
     background-color: $green-dark;
     color: $green-light;
-    // border: none;
-    // border-radius: 4px;
     border-radius: 0.5rem;
     cursor: pointer;
-  
+
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: width 0.3s ease;
+    position: relative;
+    transition: all 0.5s ease;
+
+    &:hover {
+      background-color: $green;
+    }
+
+    input {
+      height: 85%;
+      width: 0%;
+      padding: 0 5px;
+      border: none;
+      color: $dark;
+      font-size: 14px;
+      border-radius: 0.5rem;
+      outline: none;
+
+      position: absolute;
+      left: 3px;
+      z-index: 10;
+
+      transition: border 0.3s;
+
+      &:focus {
+        border: 2px solid $green-light;
+      }
+    }
 
     &_expanded {
-      width: 300px; /* Расширяем кнопку при активации поля ввода */
+      width: 250px;
+      padding: 2px 0 2px 2px;
+
+      input {
+        width: 75%;
+      }
+
+      .dropdown-search__btn-text {
+        justify-content: end;
+      }
+    }
+
+    &-text {
+      flex-grow: 1;
+      padding: 0 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: nowrap;
+      gap: 3px;
+      overflow: hidden;
+    }
+
+    span {
+      width: 100%;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+
+    &-icon {
+      width: 1.2em;
+      height: 1.2em;
+      transition: transform 0.4s ease;
+
+      &_rotate {
+        transform: rotate(-180deg);
+      }
     }
   }
 
@@ -37,6 +107,7 @@
 
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 5px;
 
     background-color: $green-dark;
@@ -44,7 +115,18 @@
     list-style-type: none;
     overflow-y: auto;
 
+    &-empty {
+      min-height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      border-radius: 0.5rem;
+      background-color: $dark;
+    }
+
     &-item {
+      width: 100%;
       padding: 10px;
       background-color: $dark;
       border-radius: 0.5rem;
@@ -53,11 +135,12 @@
       display: flex;
       flex-direction: column;
 
+      transition: background-color 0.3s;
 
       &:hover {
         background-color: $green;
       }
-    
+
       &_active {
         background-color: $green;
       }
@@ -65,13 +148,56 @@
   }
 }
 
-input {
-  width: 100%;
-  // max-height: 100%;
-  border: none;
-  padding: 6px;
-  color: black;
-  font-size: 16px;
-  border-radius: 0.5rem;
-  outline: none;
+// Анимация для плавного расширения и сужения
+@keyframes expand-input {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+
+  80%,
+  100% {
+    width: 75%;
+    opacity: 1;
+  }
+}
+
+@keyframes collapse-input {
+  0% {
+    width: 75%;
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  80%,
+  100% {
+    width: 0;
+    opacity: 0;
+  }
+}
+
+.expand-enter-active {
+  animation: expand-input 0.5s;
+}
+.expand-leave-active {
+  animation: collapse-input 0.5s;
+}
+
+// Переход для меню локаций
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s ease-in-out;
+}
+
+.slide-enter-active {
+  transition-delay: 0.3s;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateY(15px);
+  opacity: 0;
 }

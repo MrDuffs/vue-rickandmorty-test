@@ -5,35 +5,60 @@
       class="dropdown-search__btn"
       :class="{ 'dropdown-search__btn_expanded': isExpanded }"
     >
-      <input
-        v-if="isExpanded"
-        v-model="searchQuery"
-        @blur="handleBlur"
-        @keydown.escape="collapseInput"
-        type="text"
-        ref="searchInput"
-        placeholder="Search location"
-      />
-      <span>{{ selectedOption || 'Choose location' }}</span>
+      <Transition name="expand">
+        <input
+          v-if="isExpanded"
+          v-model="searchQuery"
+          @keydown.escape="collapseInput"
+          @blur="handleBlur"
+          type="text"
+          ref="searchInput"
+          placeholder="Search location"
+        />
+      </Transition>
+
+      <div class="dropdown-search__btn-text">
+        <span v-if="selectedOption && !isExpanded">{{ selectedOption }}</span>
+        <template v-else>
+          <MdRoundArrowBackIos
+            :class="[
+              'dropdown-search__btn-icon',
+              { 'dropdown-search__btn-icon_rotate': isExpanded },
+            ]"
+          />
+          <div class="dropdown-search__divider" />
+          <FlGlobeSearch class="dropdown-search__btn-icon" />
+        </template>
+      </div>
     </div>
 
-    <ul v-if="isExpanded" class="dropdown-search__list" @scroll="handleScroll">
-      <!-- TODO: Реализовать норм-ый спиннер -->
-      <LoadingSpinner v-if="isLocationLoading" />
-      <li
-        v-for="location in locationData"
-        :key="location.id"
-        class="dropdown-search__list-item"
-        :class="{
-          'dropdown-search__list-item_active': selectedOption === location.name,
-        }"
-        @click="selectOption(location)"
+    <Transition name="slide">
+      <ul
+        v-if="isExpanded"
+        class="dropdown-search__list"
+        @scroll="handleScroll"
       >
-        location: {{ location.name }} <br />
-        dimension: {{ location.dimension }} <br />
-        type: {{ location.type }} <br />
-      </li>
-    </ul>
+        <!-- TODO: Реализовать норм-ый спиннер -->
+        <LoadingSpinner v-if="isLocationLoading" />
+        <div v-if="computedMessage" class="dropdown-search__list-empty">
+          {{ computedMessage }}
+        </div>
+        <li
+          v-for="location in locationData"
+          :key="location.id"
+          class="dropdown-search__list-item"
+          :class="{
+            'dropdown-search__list-item_active':
+              selectedOption === location.name,
+          }"
+          @click="selectOption(location)"
+        >
+          location: {{ location.name }} <br />
+          dimension: {{ location.dimension }} <br />
+          type: {{ location.type }} <br />
+        </li>
+      </ul>
+    </Transition>
   </div>
 </template>
 
@@ -54,7 +79,8 @@ interface DropdownSearchEmits {
 const emit = defineEmits<DropdownSearchEmits>();
 
 const location = useLocationStore();
-const { locationData, isLocationLoading } = storeToRefs(location);
+const { locationData, isLocationLoading, computedMessage } =
+  storeToRefs(location);
 
 // Управляет состоянием кнопки/поля ввода
 const isExpanded = ref(false);
