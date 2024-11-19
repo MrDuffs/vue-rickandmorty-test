@@ -1,59 +1,78 @@
+@use '@/assets/styles/variables' as *;
+
 .search {
-  display: flex;
-  gap: 10px;
   width: 100%;
   max-width: 600px;
+  display: flex;
 
   &__input-wrapper {
+    padding: 0 10px;
     position: relative;
     flex-grow: 1;
     display: flex;
     align-items: center;
+    gap: 5px;
+    border-radius: 0.5rem;
+    background-color: $green-light;
   }
 
   &__input {
     width: 100%;
-    padding: 8px 20px;
-    border: 1px solid #ccc;
+    padding: 8px 10px;
+    border: none;
     border-radius: 0.5rem;
     font-size: 16px;
+    color: $green-dark;
     outline: none;
+    background-color: $green-light;
     transition: border-color 0.2s;
 
-    &:focus {
-      border-color: #007bff;
+    &::placeholder {
+      color: $dark;
     }
+
+    // &:focus {
+    // }
+  }
+
+  &__search-icon {
+    color: $green-dark;
   }
 
   &__clear-btn {
-    position: absolute;
-    right: 8px;
+    padding: 2px;
     background: none;
     border: none;
-    cursor: pointer;
-    padding: 4px;
+    border-radius: 100%;
+
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: $dark;
+
+      .search__clear-icon {
+        color: $green;
+      }
+    }
   }
 
   &__clear-icon {
-    font-size: 20px;
     line-height: 1;
-    color: #666;
+    color: $green-dark;
   }
+}
 
-  &__submit-btn {
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
 
-    &:hover {
-      background-color: #0056b3;
-    }
-  }
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }

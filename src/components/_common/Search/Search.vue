@@ -1,7 +1,7 @@
 <template>
   <form class="search" @submit.prevent="handleSubmit">
     <div class="search__input-wrapper">
-      <slot name="icon"></slot>
+      <ClSearchMagnifyingGlass class="search__search-icon" />
       <input
         type="text"
         class="search__input"
@@ -10,19 +10,18 @@
         :placeholder="placeholder"
         ref="inputRef"
       />
-      <button
-        v-if="modelValue"
-        type="button"
-        class="search__clear-btn"
-        @click="clearInput"
-        aria-label="Clear search"
-      >
-        <span class="search__clear-icon">×</span>
-      </button>
+      <Transition name="fade">
+        <button
+          v-if="modelValue"
+          type="button"
+          class="search__clear-btn"
+          @click="clearInput"
+          aria-label="Clear search"
+        >
+          <MdRoundClear class="search__clear-icon" />
+        </button>
+      </Transition>
     </div>
-    <!-- <slot name="submit-button">
-      <button type="submit" class="search__submit-btn">Search</button>
-    </slot> -->
   </form>
 </template>
 
