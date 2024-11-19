@@ -1,13 +1,11 @@
 <template>
   <header class="header">
-    <Search
-      v-model="searchQuery"
-      placeholder="Find character by name"
-    />
-    <DropdownSearch />
+    <Search v-model="searchQuery" placeholder="Find character by name" />
+    <DropdownSearch @get-chars-from-location="handleSearchCharsByLocation" />
   </header>
   <main class="main-layout">
-    <CardList :charactersData="charactersData" />
+    <!-- <CardList :charactersData="charactersData" /> -->
+    <CardList />
   </main>
 </template>
 
@@ -19,9 +17,13 @@ import { Search, DropdownSearch } from 'components/_common';
 import CardList from 'components/CardList';
 
 const charsStore = useCharacterStore();
-const { charactersData } = storeToRefs(charsStore);
+// const { charactersData } = storeToRefs(charsStore);
 
 const searchQuery = ref('');
+
+const handleSearchCharsByLocation = async (charsArr: string[]) => {
+  await charsStore.getCharsFromLocation(charsArr)
+};
 
 onMounted(async () => {
   await charsStore.getCharsData();
@@ -34,12 +36,13 @@ watch(searchQuery, async newSearchQuery => {
 
 <style lang="scss">
 .header {
-  // padding: 20px 20px 0 20px;
   padding: 20px;
+  min-height: 50px;
 
   display: flex;
   justify-content: center;
-  align-items: center;
+  // align-items: center;
+  align-items: stretch;
   gap: 10px;
 }
 </style>
