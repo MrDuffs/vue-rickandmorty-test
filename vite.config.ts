@@ -4,10 +4,19 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueDevTools from 'vite-plugin-vue-devtools';
 
+import Components from 'unplugin-vue-components/vite';
+import VueIconsResolver from '@kalimahapps/vue-icons/resolver';
+
 // https://vite.dev/config/
 /** @type {import('vite').UserConfig} */
 export default defineConfig(async () => ({
-  plugins: [vue(), vueDevTools()],
+  plugins: [
+    vue(),
+    vueDevTools(),
+    Components({
+      resolvers: [VueIconsResolver],
+    }),
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
