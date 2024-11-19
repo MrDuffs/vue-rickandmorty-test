@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { locationApi } from '@/api/location';
 import type { Info } from '@/types/api.types';
 import type { Location } from '@/types/location.types';
+import { AxiosError } from 'axios';
 
 export const useLocationStore = defineStore('location', () => {
   const locationData = ref<Location[]>([]);
@@ -15,6 +16,7 @@ export const useLocationStore = defineStore('location', () => {
 
   const getLocations = async () => {
     isLocationLoading.value = true;
+    locationError.value = null;
     try {
       const response = await locationApi.getLocations({
         name: currentSearchParam.value.length
@@ -32,11 +34,7 @@ export const useLocationStore = defineStore('location', () => {
       }
       paginationInfo.value = info;
     } catch (error) {
-      if (error instanceof Error) {
-        locationError.value = error.message;
-      } else {
-        locationError.value = 'An unknown error occurred';
-      }
+      handleError(error as AxiosError | Error | string);
     } finally {
       isLocationLoading.value = false;
     }
@@ -63,9 +61,25 @@ export const useLocationStore = defineStore('location', () => {
     await getLocations();
   };
 
+  const handleError = (err: AxiosError | Error | string) => {
+    if (err instanceof AxiosError) {
+      locationError.value = err.response?.data.error;
+    } else if (err instanceof Error) {
+      locationError.value = err.message;
+    } else {
+      locationError.value = 'An unknown error occurred';
+    }
+  };
+
   const hasMorePages = computed(() => {
     return paginationInfo.value
       ? currentPage.value < paginationInfo.value.pages
+      : false;
+  });
+
+  const computedMessage = computed(() => {
+    return locationError.value === 'There is nothing here'
+      ? 'There is no such location'
       : false;
   });
 
@@ -78,5 +92,8 @@ export const useLocationStore = defineStore('location', () => {
     getLocations,
     loadMoreLocations,
     getLocationByName,
+
+    // Computed
+    computedMessage,
   };
 });
