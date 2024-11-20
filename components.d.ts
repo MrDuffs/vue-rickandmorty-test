@@ -12,6 +12,7 @@ declare module 'vue' {
     ClSearchMagnifyingGlass: typeof import('@kalimahapps/vue-icons/cl')['ClSearchMagnifyingGlass']
     DropdownSearch: typeof import('./src/components/_common/DropdownSearch/DropdownSearch.vue')['default']
     FlGlobeSearch: typeof import('@kalimahapps/vue-icons/fl')['FlGlobeSearch']
+    Header: typeof import('./src/components/Header/Header.vue')['default']
     LoadingSpinner: typeof import('./src/components/_common/LoadingSpinner/LoadingSpinner.vue')['default']
     MdRoundArrowBackIos: typeof import('@kalimahapps/vue-icons/md')['MdRoundArrowBackIos']
     MdRoundClear: typeof import('@kalimahapps/vue-icons/md')['MdRoundClear']
