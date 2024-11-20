@@ -18,7 +18,12 @@
       </Transition>
 
       <div class="dropdown-search__btn-text">
-        <span v-if="selectedOption && !isExpanded">{{ selectedOption }}</span>
+        <div
+          v-if="selectedLocation && !isExpanded"
+          class="dropdown-search__btn-selected"
+        >
+          {{ selectedLocation }}
+        </div>
         <template v-else>
           <MdRoundArrowBackIos
             :class="[
@@ -32,7 +37,7 @@
       </div>
     </div>
 
-    <Transition name="slide">
+    <Transition name="slide" mode="out-in">
       <ul
         v-if="isExpanded"
         class="dropdown-search__list"
@@ -49,7 +54,7 @@
           class="dropdown-search__list-item"
           :class="{
             'dropdown-search__list-item_active':
-              selectedOption === location.name,
+              selectedLocation === location.name,
           }"
           @click="selectOption(location)"
         >
@@ -79,15 +84,13 @@ interface DropdownSearchEmits {
 const emit = defineEmits<DropdownSearchEmits>();
 
 const location = useLocationStore();
-const { locationData, isLocationLoading, computedMessage } =
+const { locationData, selectedLocation, isLocationLoading, computedMessage } =
   storeToRefs(location);
 
 // Управляет состоянием кнопки/поля ввода
 const isExpanded = ref(false);
 // Строка поиска
 const searchQuery = ref('');
-// Выбранное значение
-const selectedOption = ref<string | null>(null);
 // Ссылка на элемент input для автофокусировки
 const searchInput = ref<HTMLInputElement | null>(null);
 const dropdown = ref<HTMLElement | null>(null);
@@ -106,7 +109,7 @@ const collapseInput = () => {
 };
 
 const selectOption = async (option: Location) => {
-  selectedOption.value = option.name;
+  selectedLocation.value = option.name;
   const charIds = getCharsIds(option.residents);
 
   emit('get-chars-from-location', charIds);
