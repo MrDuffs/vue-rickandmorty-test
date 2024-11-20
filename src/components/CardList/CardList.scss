@@ -1,7 +1,8 @@
 @use 'assets/styles/variables' as *;
 
 .card-list {
-  max-height: calc(100dvh - 60px);
+  max-height: calc(100dvh - 70px);
+  height: 100%;
   padding: 20px;
 
   display: flex;
@@ -11,13 +12,73 @@
   overflow-y: auto;
 
   &__container {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    position: relative;
+
+    @media (min-width: 768px) {
+      margin: 0 auto;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      align-items: stretch;
+      height: min-content;
+      gap: 20px;
+    }
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    @media (min-width: 1440px) {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+    }
+  }
+
+  &__message {
+    margin: 0 auto;
+    max-width: 1200px;
+    min-height: 50px;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+
+    border-radius: 0.5rem;
+    // background-color: $dark;
+    background: radial-gradient(
+        1000px circle at 90% 5%,
+        rgba($green-light, 0.25) 0%,
+        rgba($green, 0.2) 25%,
+        rgba($green-dark, 0.1) 50%,
+        transparent 70%
+      ),
+      radial-gradient(
+        800px circle at 10% 95%,
+        rgba($green, 0.3) 0%,
+        rgba($green-dark, 0.2) 30%,
+        rgba($dark, 0.1) 60%,
+        transparent 80%
+      ),
+      $dark;
+
+    box-shadow:
+      rgba(0, 0, 0, 0.2) 0px 20px 30px -10px,
+      rgba(0, 0, 0, 0.1) 0px 10px 20px -10px;
+
+    letter-spacing: 0.03rem;
+    line-height: 1.4;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   }
 }
 
+// Анимации для списка
+.card-list-move,
 .card-list-enter-active,
 .card-list-leave-active {
   transition: all 0.5s ease;
@@ -31,4 +92,40 @@
 .card-list-leave-to {
   opacity: 0;
   transform: translateX(40px);
+}
+
+// .card-list-leave-active {
+//   transition: all 0.2s ease;
+//   position: absolute;
+// }
+
+// Анимации для сообщения
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease-out;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+@media (min-width: 768px) {
+  .card-list {
+    max-height: calc(100dvh - 80px);
+  }
+}
+@media (min-width: 1024px) {
+  .card-list {
+    gap: 30px;
+
+    &__message {
+      font-size: 1rem;
+    }
+  }
 }

@@ -9,44 +9,119 @@
   flex-direction: column;
   gap: 5px;
 
-  background-color: $green-dark;
+  background: radial-gradient(
+      1000px circle at 90% 5%,
+      rgba($green-light, 0.25) 0%,
+      rgba($green, 0.2) 25%,
+      rgba($green-dark, 0.1) 50%,
+      transparent 70%
+    ),
+    radial-gradient(
+      800px circle at 10% 95%,
+      rgba($green, 0.3) 0%,
+      rgba($green-dark, 0.2) 30%,
+      rgba($dark, 0.1) 60%,
+      transparent 80%
+    ),
+    $dark;
+
   border-radius: 1rem;
   overflow: hidden;
 
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  @media (hover: hover) {
+    &:hover {
+      transform: scale(1.005);
+      box-shadow:
+        rgba(0, 0, 0, 0.2) 0px 20px 30px -10px,
+        rgba(0, 0, 0, 0.1) 0px 10px 20px -10px;
+    }
+  }
+
   &__img {
-    flex-shrink: 0;
-    position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;
-    border-radius: 1rem;
+    aspect-ratio: 1 / 1 auto;
+    border-radius: 0.7rem;
     overflow: hidden;
 
     img {
-      position: absolute; // Абсолютное позиционирование
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
       object-position: center;
       object-fit: cover;
-      border-radius: inherit; // Наследуем border-radius от родителя
-      transition: transform 0.3s ease; // Добавляем плавность для hover эффектов
-
-      &:hover {
-        transform: scale(1.05); // Опционально: эффект при наведении
-      }
     }
   }
+
   &__info {
-    flex-grow: 1;
     min-width: 0;
+
+    padding: 10px;
+    flex: 1;
+    border-radius: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+
+    background: radial-gradient(
+        600px circle at 95% 5%,
+        rgba($green-light, 0.3) 0%,
+        rgba($green, 0.2) 30%,
+        transparent 60%
+      ),
+      radial-gradient(
+        400px circle at 85% 15%,
+        rgba($green, 0.2) 0%,
+        rgba($green-dark, 0.1) 40%,
+        transparent 70%
+      ),
+      radial-gradient(
+        700px circle at 5% 95%,
+        rgba($green, 0.3) 0%,
+        rgba($green-dark, 0.2) 30%,
+        transparent 60%
+      ),
+      radial-gradient(
+        500px circle at 15% 85%,
+        rgba($green-light, 0.2) 0%,
+        rgba($green, 0.1) 40%,
+        transparent 70%
+      ),
+      $dark;
+
+    letter-spacing: 0.05rem;
+    line-height: 1.4;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   }
-  &__title {
-  }
+
   &__name {
+    font-size: 1.2rem;
   }
-  &__gender {
-  }
+
+  &__gender,
+  &__status,
   &__location {
+    font-size: 0.8rem;
+  }
+
+  &__location {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (min-width: 768px) {
+  .card {
+    padding: 15px;
+    gap: 10px;
+
+    &__gender,
+    &__status,
+    &__location {
+      font-size: 0.9rem;
+    }
   }
 }
