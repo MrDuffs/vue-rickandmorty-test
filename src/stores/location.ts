@@ -14,6 +14,8 @@ export const useLocationStore = defineStore('location', () => {
   const currentPage = ref(1);
   const currentSearchParam = ref('');
 
+  const selectedLocation = ref('');
+
   const getLocations = async () => {
     isLocationLoading.value = true;
     locationError.value = null;
@@ -87,6 +89,7 @@ export const useLocationStore = defineStore('location', () => {
     // State
     locationData,
     isLocationLoading,
+    selectedLocation,
 
     // Actions
     getLocations,
