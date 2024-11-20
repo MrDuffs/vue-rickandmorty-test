@@ -7,6 +7,7 @@ import type {
   CharacterStoreState,
   GetCharsDataAction,
 } from '@/types/store.types';
+import { AxiosError } from 'axios';
 
 export const useCharacterStore = defineStore('character', () => {
   const charactersData = ref<Character[]>([]);
@@ -17,8 +18,9 @@ export const useCharacterStore = defineStore('character', () => {
 
   const currentSearchParam = ref('');
 
-  const getCharsData: GetCharsDataAction = async params => {
+  const getCharsData = async () => {
     isCharsLoading.value = true;
+    charsError.value = null;
     try {
       const response = await characterApi.getCharacters({
         name: currentSearchParam.value.length
@@ -36,11 +38,7 @@ export const useCharacterStore = defineStore('character', () => {
       }
       paginationInfo.value = info;
     } catch (error) {
-      if (error instanceof Error) {
-        charsError.value = error.message;
-      } else {
-        charsError.value = 'An unknown error occurred';
-      }
+      handleError(error as AxiosError | Error | string);
       // Сбрасываем данные при ошибке
       if (currentPage.value === 1) {
         charactersData.value = [];
@@ -59,13 +57,13 @@ export const useCharacterStore = defineStore('character', () => {
   };
 
   const getCharsByName = async (name: string) => {
-    if (name.trim() === currentSearchParam.value) {
+    const trimName = name.trim();
+    if (trimName === currentSearchParam.value) {
       return;
     }
-    if (name !== currentSearchParam.value) {
-      charactersData.value = [];
+    if (trimName !== currentSearchParam.value) {
       currentPage.value = 1;
-      currentSearchParam.value = name;
+      currentSearchParam.value = trimName;
     }
 
     await getCharsData();
@@ -79,6 +77,7 @@ export const useCharacterStore = defineStore('character', () => {
     try {
       if (!charsArr.length) {
         charactersData.value = [];
+        charsError.value = 'No characters in this location';
         return;
       }
 
@@ -88,11 +87,7 @@ export const useCharacterStore = defineStore('character', () => {
 
       charactersData.value = Array.isArray(results) ? results : [results];
     } catch (error) {
-      if (error instanceof Error) {
-        charsError.value = error.message;
-      } else {
-        charsError.value = 'An unknown error occurred';
-      }
+      handleError(error as AxiosError | Error | string);
       // Сбрасываем данные при ошибке
       if (currentPage.value === 1) {
         charactersData.value = [];
@@ -103,13 +98,15 @@ export const useCharacterStore = defineStore('character', () => {
     }
   };
 
-  // const resetSearch = () => {
-  //   charactersData.value = [];
-  //   currentPage.value = 1;
-  //   paginationInfo.value = null;
-  //   currentSearchParams.value = {};
-  //   charsError.value = null;
-  // };
+  const handleError = (err: AxiosError | Error | string) => {
+    if (err instanceof AxiosError) {
+      charsError.value = err.response?.data.error;
+    } else if (err instanceof Error) {
+      charsError.value = err.message;
+    } else {
+      charsError.value = 'An unknown error occurred';
+    }
+  };
 
   const hasMorePages = computed(() => {
     return paginationInfo.value
@@ -119,6 +116,19 @@ export const useCharacterStore = defineStore('character', () => {
 
   const isAnyCharacters = computed(() => {
     return charactersData.value.length;
+  });
+
+  const computedMessage = computed(() => {
+    if (!charsError.value && !hasMorePages.value) {
+      return 'No more characters'
+    }
+    if (charsError.value === 'There is nothing here') {
+      return 'There is no such character(s)';
+    }
+    if (charsError.value) {
+      return charsError.value;
+    }
+    return false;
   });
 
   return {
@@ -139,5 +149,6 @@ export const useCharacterStore = defineStore('character', () => {
     // Computed
     hasMorePages,
     isAnyCharacters,
+    computedMessage,
   };
 });
