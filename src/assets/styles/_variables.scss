@@ -7,24 +7,45 @@ $green-light: #e2f1e7;
 /* semantic color variables for this project */
 $color-background: $dark;
 $color-text: $green-light;
-// --color-background-soft: var(--vt-c-white-soft);
-// --color-background-mute: var(--vt-c-white-mute);
 
-// --color-border: var(--vt-c-divider-light-2);
-// --color-border-hover: var(--vt-c-divider-light-1);
+// Переменные для теней
+$shadow-opacity-light: 0.1;
+$shadow-opacity-medium: 0.15;
+$shadow-opacity-heavy: 0.2;
 
-// --color-heading: var(--vt-c-text-light-1);
+$shadow-offset-small: 2px;
+$shadow-offset-medium: 4px;
+$shadow-offset-large: 6px;
 
-// @media (prefers-color-scheme: dark) {
-//   :root {
-//     --color-background: var(--vt-c-black);
-//     --color-background-soft: var(--vt-c-black-soft);
-//     --color-background-mute: var(--vt-c-black-mute);
+$shadow-blur-small: 4px;
+$shadow-blur-medium: 8px;
+$shadow-blur-large: 12px;
 
-//     --color-border: var(--vt-c-divider-dark-2);
-//     --color-border-hover: var(--vt-c-divider-dark-1);
+// Базовые тени
+$shadow-light: 0 $shadow-offset-small $shadow-blur-small
+  rgba($dark, $shadow-opacity-light);
+$shadow-medium: 0 $shadow-offset-medium $shadow-blur-medium
+  rgba($dark, $shadow-opacity-medium);
+$shadow-large: 0 $shadow-offset-large $shadow-blur-large
+  rgba($dark, $shadow-opacity-heavy);
 
-//     --color-heading: var(--vt-c-text-dark-1);
-//     --color-text: var(--vt-c-text-dark-2);
-//   }
-// }
+// Зеленые тени
+$shadow-green-light: 0 $shadow-offset-small $shadow-blur-medium
+  rgba($green, $shadow-opacity-light);
+$shadow-green-medium: 0 $shadow-offset-medium $shadow-blur-large
+  rgba($green-dark, $shadow-opacity-medium);
+$shadow-green-glow: 0 0 15px rgba($green-light, 0.5);
+
+// Внутренняя тень
+$shadow-inner: inset 0 $shadow-offset-small $shadow-blur-small
+  rgba($dark, $shadow-opacity-light);
+
+// Комплексные тени
+$shadow-complex:
+  0 $shadow-offset-medium $shadow-blur-medium rgba($dark, $shadow-opacity-light),
+  0 $shadow-offset-small $shadow-blur-small
+    rgba($green-dark, $shadow-opacity-light);
+
+$shadow-lifted:
+  0 5px 15px rgba($dark, $shadow-opacity-heavy),
+  0 3px 6px rgba($green, $shadow-opacity-light);
