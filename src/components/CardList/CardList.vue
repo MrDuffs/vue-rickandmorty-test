@@ -1,17 +1,29 @@
 <template>
   <div class="card-list" ref="listRef" @scroll="handleScroll">
-    <!-- <LoadingSpinner v-if="isCharsLoading" /> -->
-    <TransitionGroup name="card-list" tag="div" class="card-list__container">
-      <template v-if="isAnyCharacters && !isCharsLoading">
-        <Card
-          v-for="character in charactersData"
-          :key="character.id"
-          :character="character"
-        />
-      </template>
+    <LoadingSpinner v-if="isCharsLoading" />
+    <TransitionGroup
+      tag="div"
+      name="card-list"
+      class="card-list__container"
+      appear
+      v-if="!isCharsLoading && charactersData.length > 0"
+    >
+      <Card
+        v-for="(character, index) in charactersData"
+        :key="character.id"
+        :character="character"
+        :data-index="index"
+      />
     </TransitionGroup>
 
-    {{ !hasMorePages && !isCharsLoading ? 'Персонажей больше нет' : '' }}
+    <Transition
+      name="fade"
+      mode="out-in"
+    >
+      <div v-if="computedMessage && !isCharsLoading" class="card-list__message">
+        {{ computedMessage }}
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -23,16 +35,8 @@ import { Card, LoadingSpinner } from 'components/_common';
 import { useCharacterStore } from '@/stores/character';
 import type { Character } from '@/types/character.types';
 
-interface CardListProps {
-  charactersData: Character[];
-}
-
-const props = withDefaults(defineProps<CardListProps>(), {
-  charactersData: () => [],
-});
-
 const charsStore = useCharacterStore();
-const { isCharsLoading, hasMorePages, isAnyCharacters } =
+const { charactersData, isCharsLoading, hasMorePages, computedMessage } =
   storeToRefs(charsStore);
 
 const listRef = ref<HTMLElement | null>(null);
